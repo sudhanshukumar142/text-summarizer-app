@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Text Summarizer</title>
+
+    <style>
+
+        /* ===== GLOBAL STYLING ===== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f7ff;
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 30px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            padding: 32px 25px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 10px 40px rgba(75, 85, 150, 0.10);
+        }
+
+        /* ===== HEADER ===== */
+
+        h1 {
+            text-align: center;
+            font-size: 34px;
+            font-weight: 750;
+            color: #4338ca;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+
+        .description {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* ===== TEXT INPUT ===== */
+
+        textarea {
+            width: 100%;
+            height: 175px;
+            padding: 15px;
+            background: #f8faff;
+            color: #1e293b;
+            border: 1.5px solid #dbe3ff;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        /* ===== WORD COUNTER ===== */
+
+        .word-counter {
+            text-align: right;
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        /* ===== SUMMARIZE BUTTON ===== */
+
+        button {
+            border: none;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .summarize-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            color: white;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .summarize-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.20);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== SUMMARY SECTION ===== */
+
+        .summary-output {
+            margin-top: 22px;
+            padding: 18px;
+            min-height: 100px;
+            background: #f8faff;
+            border: 1px solid #dbe3ff;
+            border-radius: 10px;
+        }
+
+        .summary-output h2 {
+            text-align: center;
+            font-size: 19px;
+            color: #4338ca;
+            margin-bottom: 14px;
+        }
+
+        #summary-text {
+            color: #334155;
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* ===== COPY BUTTON ===== */
+
+        .copy-btn {
+            display: none;
+            width: 100%;
+            padding: 11px;
+            margin-top: 12px;
+            color: #4338ca;
+            background: #e0e7ff;
+        }
+
+        .copy-btn:hover {
+            background: #c7d2fe;
+        }
+
+        /* ===== FOOTER ===== */
+
+        footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.creator {
+    color: #4338ca;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.copyright {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+        /* ===== RESPONSIVE DESIGN ===== */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 22px 16px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            textarea {
+                height: 160px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+
+        <h1>Text Summarizer</h1>
+
+        <h3 class="subtitle">
+            Using Hugging Face Transformer
+        </h3>
+
+        <p class="description">
+            Write or paste your content below for quick summarization.
+        </p>
+
+
+        <!-- Input Form -->
+
+        <form id="summarization-form">
+
+            <textarea
+                id="dialogue-input"
+                placeholder="Enter your content here..."
+                required
+            ></textarea>
+
+            <div class="word-counter" id="word-counter">
+                Words: 0
+            </div>
+
+            <button
+                type="submit"
+                class="summarize-btn"
+                id="submit-button"
+            >
+                Summarize
+            </button>
+
+        </form>
+
+
+        <!-- Summary Output -->
+
+        <div class="summary-output">
+
+            <h2>Content Summary</h2>
+
+            <p id="summary-text">
+                Your generated summary will appear here...
+            </p>
+
+            <button
+                type="button"
+                class="copy-btn"
+                id="copy-button"
+            >
+                Copy Summary
+            </button>
+
+        </div>
+
+
+        <!-- Footer -->
+
+      
+<footer>
+    <p>AI Text Summarizer | Powered by T5 Transformer</p>
+    <p class="creator">Developed by Sudhanshu Kumar ❤️</p>
+    <p class="copyright">© 2026 Sudhanshu Kumar. All Rights Reserved.</p>
+</footer>
+
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // Get HTML elements
+
+        const form = document.getElementById("summarization-form");
+
+        const dialogueInput = document.getElementById("dialogue-input");
+
+        const summaryText = document.getElementById("summary-text");
+
+        const submitButton = document.getElementById("submit-button");
+
+        const copyButton = document.getElementById("copy-button");
+
+        const wordCounter = document.getElementById("word-counter");
+
+
+        // Live Word Counter
+
+        dialogueInput.addEventListener("input", () => {
+
+            const text = dialogueInput.value.trim();
+
+            const words = text
+                ? text.split(/\s+/).length
+                : 0;
+
+            wordCounter.innerText = `Words: ${words}`;
+
+        });
+
+
+        // Text Summarization
+
+        form.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const dialogue = dialogueInput.value.trim();
+
+            if (!dialogue) {
+
+                summaryText.innerText = "Please enter some text.";
+
+                return;
+
+            }
+
+            // Processing message
+
+            summaryText.innerText = "Processing... Please wait.";
+
+            copyButton.style.display = "none";
+
+            submitButton.disabled = true;
+
+            submitButton.innerText = "Summarizing...";
+
+
+            try {
+
+                // Send request to FastAPI
+
+                const response = await fetch("/summarize/", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        dialogue: dialogue
+                    })
+
+                });
+
+
+                const responseText = await response.text();
+                let data;
+
+                try {
+                    data = responseText ? JSON.parse(responseText) : {};
+                } catch (error) {
+                    throw new Error(
+                        `Server returned an invalid response (${response.status}).`
+                    );
+                }
+
+
+                // Check response
+
+                if (!response.ok) {
+
+                    const detail = typeof data.detail === "string"
+                        ? data.detail
+                        : "Summarization failed.";
+
+                    throw new Error(detail);
+
+                }
+
+
+                // Display generated summary
+
+                summaryText.innerText =
+                    data.summary || "No summary returned.";
+
+                if (data.summary) {
+
+                    copyButton.style.display = "block";
+
+                }
+
+
+            }
+
+            catch (error) {
+
+                summaryText.innerText =
+                    "Error: " + error.message;
+
+            }
+
+            finally {
+
+                submitButton.disabled = false;
+
+                submitButton.innerText = "Summarize";
+
+            }
+
+        });
+
+
+        // Copy Summary
+
+        copyButton.addEventListener("click", async () => {
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    summaryText.innerText
+                );
+
+                copyButton.innerText = "Copied!";
+
+                setTimeout(() => {
+
+                    copyButton.innerText = "Copy Summary";
+
+                }, 2000);
+
+            }
+
+            catch (error) {
+
+                copyButton.innerText = "Unable to copy";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+
