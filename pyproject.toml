@@ -1,2 +1,17 @@
+[project]
+name = "text-summarizer-app"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "safetensors>=0.4.0",
+    "jinja2>=3.1.0",
+    "pydantic>=2.0.0",
+    "sentencepiece>=0.1.99"
+]
+
 [tool.vercel]
 entrypoint = "saved_summary_model.app:app"
